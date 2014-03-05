@@ -1,0 +1,168 @@
+
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		
+		<title>WePromise.EU</title>
+		<meta name="description" content="Description">
+		<meta name="keywords" content="Keywords">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="shortcut icon" href="http://www.wepromise.eu/favicon.ico">
+
+		<!-- Bootstrap -->
+		<link href="http://www.wepromise.eu/assets/frontend/css/main.css" rel="stylesheet">
+
+
+		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+		<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+		<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+		  <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+		  	<link href="http://www.wepromise.eu/assets/frontend/css/ie8.css" rel="stylesheet">
+		<![endif]-->
+		
+		<!--[if gte IE 9]>
+				<link rel="stylesheet" type="text/css" href="http://www.wepromise.eu/assets/frontend/css/ie9.css" />
+		<![endif]-->
+		<style>
+			body {
+				#background-color: #2c3e50;
+				width: 280px;
+				font-family: 'Open Sans', sans-serif;
+			}
+			label {
+				color: 'back';
+			}
+			select {
+				height: 38px;
+				font-size: 16px;
+				width: 100%;
+				display: inline-block;;
+				border:solid 1px #dee1e3;
+				-webkit-border-radius: 4px;
+				-moz-border-radius: 4px;
+				border-radius: 4px;
+				-webkit-box-shadow:  0px 0px 0px 1px #75818c;
+				box-shadow:  0px 0px 0px 1px #75818c;
+				padding-left: 14px;
+				color:#34495e;
+				font-family: 'Open Sans', sans-serif;
+			}
+			input[type=submit] {
+				margin-top: 5px;
+			}
+			#chk_subscribe {
+				display: inline !important;
+			}
+			p.warning {
+				color: red;
+			}
+			p.success {
+				color: #1ABC9C;
+			}
+		</style>
+		
+	</head>
+	<body>
+		<div class="container">
+			<img src="http://www.wepromise.eu/assets/frontend/img/logo.png">
+			<p>Sign the petition to promise to vote for a candidate who supports the <a href="http://www.wepromise.eu/en/page/charter">10 point Charter of</a> Digital Rights.</p>
+		 
+
+			<form id="promise_to_vote_form" method="post" action="http://www.wepromise.eu/auxiliar/handle_vote_promise">
+				<input name="name" type="text" placeholder="Name">
+				<input type="text" name="email" placeholder="E-mail">
+				<select name="country">
+					<option value="" disabled="" selected="">Country</option>
+					<option value="at">Austria</option>
+					<option value="be">Belgium</option>
+					<option value="bg">Bulgaria</option>
+					<option value="hr">Croatia</option>
+					<option value="cy">Cyprus</option>
+					<option value="cz">Czech Republic</option>
+					<option value="dk">Denmark</option>
+					<option value="ee">Estonia</option>
+					<option value="fi">Finland</option>
+					<option value="fr">France</option>
+					<option value="de">Germany</option>
+					<option value="gr">Greece</option>
+					<option value="hu">Hungary</option>
+					<option value="ie">Ireland</option>
+					<option value="it">Italy</option>
+					<option value="lv">Latvia</option>
+					<option value="lt">Lithuania</option>
+					<option value="lu">Luxembourg</option>
+					<option value="mt">Malta</option>
+					<option value="nl">Netherlands</option>
+					<option value="pl">Poland</option>
+					<option value="pt">Portugal</option>
+					<option value="ro">Romania</option>
+					<option value="sk">Slovakia</option>
+					<option value="si">Slovenia</option>
+					<option value="es">Spain</option>
+					<option value="se">Sweden</option>
+					<option value="gb">United Kingdom</option>
+				</select>
+
+				<input class="clickable" type="submit" value="Promise to vote"> 
+				
+				<input id="chk_subscribe" name="subscribe" value="subscribe" type="checkbox"> 
+				<label for="chk_subscribe">mail me campaign updates</label>
+
+			</form>
+			<div id="msg"></div>
+		</div>
+		<script src="http://www.wepromise.eu/assets/frontend/js/jquery.js"></script>
+		<script type="text/javascript">
+			$('#promise_to_vote_form').on('submit', function (event) {
+				event.preventDefault();
+  			console.log($(this).serialize());
+				$.ajax({
+					url: 'http://www.wepromise.eu/auxiliar/handle_vote_promise'
+					, data: $(this).serialize()
+					, dataType: 'json'
+					, type: 'POST'
+					, success: showResponseCool
+				});
+			});
+					 
+				function showResponseCool(data){
+					console.log('showResponseCool', data);
+					clearMsg();
+				
+					if(data.state=="true"){
+						addMsg("Please confirm your promise by clicking the link in the email.", "success");
+						//addMsg("Your promise has been successful! Now you can make your vote count - come back on the day before the elections to find out which candidate in your region supports digital rights!", 'success');
+					}
+					else {
+						if(data.name_required=='false'){
+							addMsg("Name field is required.", "error");
+						}
+						if(data.email_required=='false') {
+							addMsg("Email field is required.", "error");
+						}
+						if(data.country_required=='false') {
+							addMsg("Country field is required.", "error");	
+						}
+						if(data.state=="false_email"){
+							addMsg("This email is already used!", "error");
+						}
+					}	
+				}
+
+				function clearMsg() {
+					$('#msg').html('');
+				}
+
+				function addMsg (msg, type) {
+					console.log('addMsg', msg, type)
+					if (type === 'error') {
+						$('#msg').append('<p class="warning">'+msg+'</p>');
+					}
+					else {
+						$('#msg').append('<p class="success">'+msg+'</p>');
+					}
+				}
+
+		</script>
+	
+</body></html>
