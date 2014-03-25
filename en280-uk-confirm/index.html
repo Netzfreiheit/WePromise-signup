@@ -133,6 +133,9 @@
 				
 					if(data.state=="true"){
 						addMsg("Please confirm your promise by clicking the link in the email.", "success");
+						if (confirm("Now email the MEP candidates in your area to tell them you've pledged to vote for digital rights.")) {
+							window.parent.location = 'https://www.openrightsgroup.org/campaigns/email-your-mep-candidates'
+						}
 						//addMsg("Your promise has been successful! Now you can make your vote count - come back on the day before the elections to find out which candidate in your region supports digital rights!", 'success');
 					}
 					else {
